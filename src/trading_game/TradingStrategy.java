@@ -63,31 +63,56 @@ public class TradingStrategy extends BaseTradingStrategy {
 				}
 			}
 			else if(volatileCompanies.get(volatileCompanies.size()-1).equals(new Boolean(false))) {
+				if(dayIncrease(lastDays) > 0.01) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.05));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
 				if(dayIncrease(lastDays) > 0.1) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.8));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				if(dayIncrease(lastDays) > 0.2) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.7));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				if(dayIncrease(lastDays) > 0.3) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.6));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				if(dayIncrease(lastDays) > 0.4) {
 					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.5));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
 					stockOwned = true;
 				}
-				else if(dayIncrease(lastDays) > 0.2) {
+				if(dayIncrease(lastDays) > 0.5) {
 					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.4));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
 					stockOwned = true;
 				}
-				else if(dayIncrease(lastDays) > 0.3) {
+
+				if(dayIncrease(lastDays) > 0.6) {
 					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.3));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
 					stockOwned = true;
 				}
-				else if(dayIncrease(lastDays) > 0.4) {
+				if(dayIncrease(lastDays) > 0.7) {
 					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.2));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
 					stockOwned = true;
 				}
-				else if(dayIncrease(lastDays) > 0.5) {
+				if(dayIncrease(lastDays) > 0.8) {
 					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.1));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
@@ -115,8 +140,6 @@ public class TradingStrategy extends BaseTradingStrategy {
 			output = tradingManager.sellAllShares(input);
 			stockOwned = false;
 		}
-		
-		System.out.println(tradingManager.getAvailableFunds());
 		
 		return output;
 	}
