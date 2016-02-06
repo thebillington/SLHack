@@ -15,6 +15,8 @@ public class TradingStrategy extends BaseTradingStrategy {
 	List<List> companies = new ArrayList<List>();
 	private double lastPurchasePrice;
 	private double lastPurchaseDay;
+	private boolean stockOwned = false;
+	List<Boolean> volatileCompanies = new ArrayList<Boolean>();
 
 	public TradingStrategy() {
 		// Initialise any variables needed.
@@ -27,6 +29,7 @@ public class TradingStrategy extends BaseTradingStrategy {
 		// Use the trading manager to make trades based on input.
 		if (input.getDay() == 1) {
 			companies.add(new ArrayList<DayInfo>());
+			volatileCompanies.add(new Boolean(false));
 		}
 
 		List<DayInfo> companyInfo = companies.get(companies.size() - 1);
@@ -41,14 +44,34 @@ public class TradingStrategy extends BaseTradingStrategy {
 			double vol = weekVolatility(lastWeek);
 			
 			if(vol > 0.05) {
+				volatileCompanies.set(volatileCompanies.size()-1, new Boolean(true));
 				if(weekIncrease(lastWeek) > 0.01) {
-					output = tradingManager.buyMaxNumberOfShares(input);
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.5));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
+					stockOwned = true;
 				}
 				else {
 					if(input.getDay() - lastPurchaseDay > 7 && input.getClose() > lastPurchasePrice) {
 						output = tradingManager.sellAllShares(input);
+						stockOwned = false;
+					}
+					else {
+						output = tradingManager.doNothing(input);
+					}
+				}
+			}
+			else if(volatileCompanies.get(volatileCompanies.size()-1).equals(new Boolean(false))) {
+				if(weekIncrease(lastWeek) > 0.02) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.5));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				else {
+					if(input.getDay() - lastPurchaseDay > 7 && input.getClose() > lastPurchasePrice) {
+						output = tradingManager.sellAllShares(input);
+						stockOwned = false;
 					}
 					else {
 						output = tradingManager.doNothing(input);
@@ -63,9 +86,12 @@ public class TradingStrategy extends BaseTradingStrategy {
 		else {
 			output = tradingManager.doNothing(input);
 		}
-		if(input.getDay() - lastPurchaseDay > 7 && input.getClose() > lastPurchasePrice) {
+		if(input.getDay() - lastPurchaseDay > 8 && input.getClose() > lastPurchasePrice) {
 			output = tradingManager.sellAllShares(input);
+			stockOwned = false;
 		}
+		
+		System.out.println(tradingManager.getAvailableFunds());
 		
 		return output;
 	}
