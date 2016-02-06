@@ -12,7 +12,7 @@ public class DayInfo {
 	private double difference;
 	
 	private int increase;
-	private int volatitility;
+	private double volatility;
 	
 	public DayInfo(double high, double low, double open, double close) {
 		this.high = high;
@@ -31,7 +31,7 @@ public class DayInfo {
 			increase = 1;
 		}
 		
-		
+		volatility = ((high - low) / open);
 	}
 
 	public double getHigh() {
@@ -54,20 +54,12 @@ public class DayInfo {
 		return increase;
 	}
 
-	public int getVolatitility() {
-		return volatitility;
+	public double getVolatitility() {
+		return volatility;
 	}
 	
 	public double getDifference() {
 		return difference;
-	}
-	
-	static int overallVolatility(List<DayInfo> days) {
-		int total = 0;
-		for(DayInfo d : days){
-			total += d.volatitility;
-		}
-		return total/days.size();
 	}
 	
 }
