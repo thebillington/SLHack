@@ -40,6 +40,7 @@ public class TradingStrategy extends BaseTradingStrategy {
 		if(input.getDay() > 8) {
 			
 			List<DayInfo> lastWeek = companyInfo.subList(input.getDay() - 8, input.getDay() - 1);
+			List<DayInfo> lastDays = companyInfo.subList(input.getDay() - 2, input.getDay() - 1);
 			
 			double vol = weekVolatility(lastWeek);
 			
@@ -62,8 +63,32 @@ public class TradingStrategy extends BaseTradingStrategy {
 				}
 			}
 			else if(volatileCompanies.get(volatileCompanies.size()-1).equals(new Boolean(false))) {
-				if(weekIncrease(lastWeek) > 0.02) {
+				if(dayIncrease(lastDays) > 0.1) {
 					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.5));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				else if(dayIncrease(lastDays) > 0.2) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.4));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				else if(dayIncrease(lastDays) > 0.3) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.3));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				else if(dayIncrease(lastDays) > 0.4) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.2));
+					lastPurchasePrice = input.getClose();
+					lastPurchaseDay = input.getDay();
+					stockOwned = true;
+				}
+				else if(dayIncrease(lastDays) > 0.5) {
+					output = tradingManager.buySharesOfValue(input, (int) (tradingManager.getAvailableFunds()*0.1));
 					lastPurchasePrice = input.getClose();
 					lastPurchaseDay = input.getDay();
 					stockOwned = true;
@@ -108,6 +133,12 @@ public class TradingStrategy extends BaseTradingStrategy {
 		double weekOpen = lastWeek.get(0).getOpen();
 		double weekClose = lastWeek.get(lastWeek.size()-1).getClose();
 		return weekClose - weekOpen;
+	}
+	
+	private double dayIncrease(List<DayInfo> lastDay) {
+		double daysOpen = lastDay.get(0).getOpen();
+		double daysClose = lastDay.get(lastDay.size()-1).getClose();
+		return daysClose - daysOpen;
 	}
 
 }
